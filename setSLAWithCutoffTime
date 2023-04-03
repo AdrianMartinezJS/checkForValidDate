@@ -1,110 +1,126 @@
 function _calculateEasterDate(year) {
-	var a = year % 19;
-	var b = Math.floor(year / 100);
-	var c = year % 100;
-	var d = Math.floor(b / 4);
-	var e = b % 4;
-	var f = Math.floor((b + 8) / 25);
-	var g = Math.floor((b - f + 1) / 3);
-	var h = (19 * a + b - d - g + 15) % 30;
-	var i = Math.floor(c / 4);
-	var k = c % 4;
-	var l = (32 + 2 * e + 2 * i - h - k) % 7;
-	var m = Math.floor((a + 11 * h + 22 * l) / 451);
-	var n = Math.floor((h + l - 7 * m + 114) / 31);
-	var p = (h + l - 7 * m + 114) % 31;
-	return new Date(year, n - 1, p + 1);
+  var a = year % 19;
+  var b = Math.floor(year / 100);
+  var c = year % 100;
+  var d = Math.floor(b / 4);
+  var e = b % 4;
+  var f = Math.floor((b + 8) / 25);
+  var g = Math.floor((b - f + 1) / 3);
+  var h = (19 * a + b - d - g + 15) % 30;
+  var i = Math.floor(c / 4);
+  var k = c % 4;
+  var l = (32 + 2 * e + 2 * i - h - k) % 7;
+  var m = Math.floor((a + 11 * h + 22 * l) / 451);
+  var n = Math.floor((h + l - 7 * m + 114) / 31);
+  var p = (h + l - 7 * m + 114) % 31;
+  return new Date(year, n - 1, p + 1);
 }
 
 function _calculateHolidays(year) {
-	var holidays = {
-		'Neujahrstag': new Date(year, 0, 1).toLocaleDateString(),
-		'Heilige Drei Könige': new Date(year, 0, 6).toLocaleDateString(),
-		'Ostermontag': null,
-		'Staatsfeiertag': new Date(year, 4, 1).toLocaleDateString(),
-		'Christi_Himmelfahrt': null,
-		'Pfingstmontag': null,
-		'Fronleichnam': null,
-		'Mariä_Himmelfahrt': new Date(year, 7, 15).toLocaleDateString(),
-		'Nationalfeiertag': new Date(year, 9, 26).toLocaleDateString(),
-		'Allerheiligen': new Date(year, 10, 1).toLocaleDateString(),
-		'Mariä Empfängnis': new Date(year, 11, 8).toLocaleDateString(),
-		'Christtag': new Date(year, 11, 25).toLocaleDateString(),
-		'Stefanitag': new Date(year, 11, 26).toLocaleDateString()
-	};
-	var easter = _calculateEasterDate(year);
-	
-	var easterMonday = new Date(easter.getTime() + 1 * 24 * 60 * 60 * 1000).toLocaleDateString();
-	holidays.Ostermontag = easterMonday;
-	
-	var himmelfahrt = new Date(easter.getTime() + 39 * 24 * 60 * 60 * 1000).toLocaleDateString();
-	holidays.Christi_Himmelfahrt = himmelfahrt;
+  var holidays = {
+    Neujahrstag: new Date(year, 0, 1).toLocaleDateString(),
+    "Heilige Drei Könige": new Date(year, 0, 6).toLocaleDateString(),
+    Ostermontag: null,
+    Staatsfeiertag: new Date(year, 4, 1).toLocaleDateString(),
+    Christi_Himmelfahrt: null,
+    Pfingstmontag: null,
+    Fronleichnam: null,
+    Mariä_Himmelfahrt: new Date(year, 7, 15).toLocaleDateString(),
+    Nationalfeiertag: new Date(year, 9, 26).toLocaleDateString(),
+    Allerheiligen: new Date(year, 10, 1).toLocaleDateString(),
+    "Mariä Empfängnis": new Date(year, 11, 8).toLocaleDateString(),
+    Christtag: new Date(year, 11, 25).toLocaleDateString(),
+    Stefanitag: new Date(year, 11, 26).toLocaleDateString(),
+  };
+  const easter = _calculateEasterDate(year);
 
-	var pfingsten = new Date(easter.getTime() + 49 * 24 * 60 * 60 * 1000);
-	var pfingstmontag = new Date(pfingsten.getTime() + 1 * 24 * 60 * 60 * 1000).toLocaleDateString();
-	holidays.Pfingstmontag = pfingstmontag;
+  var easterMonday = new Date(
+    easter.getTime() + 1 * 24 * 60 * 60 * 1000
+  ).toLocaleDateString();
+  holidays.Ostermontag = easterMonday;
 
-	var fronleichnam = new Date(easter.getTime() + 60 * 24 * 60 * 60 * 1000).toLocaleDateString();
-	holidays.Fronleichnam = fronleichnam;
-	
-	var holidaysAsArray = [];
-	for (var key in holidays)
-		holidaysAsArray.push(holidays[key])
+  var himmelfahrt = new Date(
+    easter.getTime() + 39 * 24 * 60 * 60 * 1000
+  ).toLocaleDateString();
+  holidays.Christi_Himmelfahrt = himmelfahrt;
 
-	return holidaysAsArray;
+  var pfingsten = new Date(easter.getTime() + 49 * 24 * 60 * 60 * 1000);
+  var pfingstmontag = new Date(
+    pfingsten.getTime() + 1 * 24 * 60 * 60 * 1000
+  ).toLocaleDateString();
+  holidays.Pfingstmontag = pfingstmontag;
+
+  var fronleichnam = new Date(
+    easter.getTime() + 60 * 24 * 60 * 60 * 1000
+  ).toLocaleDateString();
+  holidays.Fronleichnam = fronleichnam;
+
+  var holidaysAsArray = [];
+  for (var key in holidays) holidaysAsArray.push(holidays[key]);
+
+  return holidaysAsArray;
 }
 
-function _checkForWeekendOrHoliday(dateToCheck, slaCounter) {
-	var count = 0;
-	while ( slaCounter > count ) {
-		print(slaCounter);
-		print(dateToCheck);
-		var holidaysFromGivenYear = _calculateHolidays(dateToCheck.getFullYear());
-		var isWeekend = dateToCheck.getDay() == 0 || dateToCheck.getDay() == 6;
-		var MonthDayYear = ("00" + (dateToCheck.getMonth() + 1)).slice(-2) + '/' + ("00" + dateToCheck.getDate()).slice(-2) + '/' + dateToCheck.getFullYear();
-		var isHoliday = holidaysFromGivenYear.indexOf(MonthDayYear);
-		dateToCheck.setDate(dateToCheck.getDate() + 1);
-		slaCounter--;
-		if (isWeekend || isHoliday != -1) {
-			slaCounter++
-			// return _checkForWeekendOrHoliday(dateToCheck, slaCounter);
-			continue;
-		}
-	}
-	return dateToCheck;
+function _getNextValidDate(dateToCheck) {
+  var isWeekend = dateToCheck.getDay() == 0 || dateToCheck.getDay() == 6;
+  var holidaysFromGivenYear = _calculateHolidays(dateToCheck.getFullYear());
+  var isHoliday = holidaysFromGivenYear.indexOf(
+    dateToCheck.toLocaleDateString()
+  );
+  console.log("holidays = " + holidaysFromGivenYear)
+  while (isHoliday != -1 || isWeekend) {
+    dateToCheck.setDate(dateToCheck.getDate() + 1);
+	holidaysFromGivenYear = _calculateHolidays(dateToCheck.getFullYear());
+    isHoliday = holidaysFromGivenYear.indexOf(dateToCheck.toLocaleDateString());
+  }
+
+  return dateToCheck;
 }
 
 function _checkCutOffTime(dateObjectToCheck, cutOffTime) {
   var isInTimeWindow = true;
-  var [cutOffHours, cutOffMinutes] = cutOffTime.split(':');
-  var cutOffDate = new Date(dateObjectToCheck.getFullYear(), dateObjectToCheck.getMonth(), dateObjectToCheck.getDate(), cutOffHours, cutOffMinutes);
-  if (dateObjectToCheck.getTime() > cutOffDate.getTime()) {
-	isInTimeWindow = false;
-  } 
+  var [cutOffHours, cutOffMinutes] = cutOffTime.split(":");
+  var cutOffDate = new Date(
+    dateObjectToCheck.getFullYear(),
+    dateObjectToCheck.getMonth(),
+    dateObjectToCheck.getDate(),
+    cutOffHours,
+    cutOffMinutes
+  );
+  if (dateObjectToCheck.getTime() >= cutOffDate.getTime()) {
+    isInTimeWindow = false;
+  }
+  console.log("isInTimeWindow ? " + isInTimeWindow)
   return isInTimeWindow;
 }
 
-
 function setSLA(todayAsDate, slaDaysToAdd, cutOffTime) {
-	var isInTime = "";
-	var cutOffTime = cutOffTime || null;
-	if (cutOffTime) 
-	{
-		isInTime = _checkCutOffTime(todayAsDate, cutOffTime);
-	}
-	if (!isInTime)
-	{
-		slaDaysToAdd++;
-	}
-	var wishedDeliveryDate = new Date(_checkForWeekendOrHoliday(todayAsDate));
-	wishedDeliveryDate.setDate(wishedDeliveryDate.getDate() + parseInt(slaDaysToAdd));
-	var slaDate = new Date(_checkForWeekendOrHoliday(wishedDeliveryDate, slaDaysToAdd));
-	var slaText = ("00" + slaDate.getDate()).slice(-2) + "." + ("00" + (slaDate.getMonth() + 1)).slice(-2) + "." + slaDate.getFullYear();
-	return slaText;
+  todayAsDate = _getNextValidDate(todayAsDate);
+  var cutOffTime = cutOffTime || null;
+  if (cutOffTime) {
+    if (!_checkCutOffTime(todayAsDate, cutOffTime)) {
+      slaDaysToAdd++;
+    }
+  }
+  console.log("SLADays = " + slaDaysToAdd);
+  var wishedDeliveryDate = new Date(todayAsDate);
+  console.log(wishedDeliveryDate.toLocaleDateString());
+  while (slaDaysToAdd >= 0) {
+    wishedDeliveryDate.setDate(wishedDeliveryDate.getDate() + 1);
+    wishedDeliveryDate = _getNextValidDate(wishedDeliveryDate);
+    slaDaysToAdd--;
+  } 
+  var slaText =
+    ("00" + wishedDeliveryDate.getDate()).slice(-2) +
+    "." +
+    ("00" + (wishedDeliveryDate.getMonth() + 1)).slice(-2) +
+    "." +
+    wishedDeliveryDate.getFullYear();
+  return slaText;
 }
 
-
 // Example to call the Function
-// var heute = new Date("2024-2-27"); // Heutiges dateToCheck erstellen
-// var sla = setSLA(heute, 2);
-// console.log(sla)
+var heute = new Date("2023-12-24T11:01"); // Heutiges dateToCheck erstellen
+var sla = setSLA(heute, 2, "11:01");
+console.log(sla);
+
